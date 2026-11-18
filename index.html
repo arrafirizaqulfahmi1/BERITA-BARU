@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Nusantara - Portal Informasi & Berita Kecerdasan Buatan</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome untuk Ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased flex flex-col min-h-screen">
+
+    <!-- Navbar / Header -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="resetFilter()">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white shadow-md">
+                        <i class="fa-solid fa-brain text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-xl tracking-tight text-slate-900">AI<span class="text-blue-600">Nusantara</span></span>
+                        <p class="text-[10px] text-slate-500 font-medium -mt-1">Pusat Informasi Kecerdasan Buatan</p>
+                    </div>
+                </div>
+
+                <!-- Navigasi Desktop -->
+                <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+                    <a href="#berita" class="hover:text-blue-600 transition">Daftar Berita</a>
+                    <a href="#kirim-info" class="hover:text-blue-600 transition">Kirim Informasi</a>
+                    <a href="#kirim-info" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-semibold shadow-sm transition">
+                        <i class="fa-solid fa-paper-plane text-xs"></i>
+                        <span>Kontak Redaksi</span>
+                    </a>
+                </nav>
+
+                <!-- Tombol WA Mobile -->
+                <div class="flex md:hidden">
+                    <a href="#kirim-info" class="inline-flex items-center gap-1.5 bg-blue-600 text-white px-3 py-2 rounded-xl text-xs font-semibold shadow-sm">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Kirim Info</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white py-12 sm:py-16 px-4">
+        <div class="max-w-5xl mx-auto text-center space-y-5">
+            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-xs font-semibold tracking-wide">
+                <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+                Update Harian Teknologi Masa Depan
+            </span>
+            <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+                Eksplorasi Perkembangan <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Kecerdasan Buatan</span> Terkini
+            </h1>
+            <p class="text-slate-300 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+                Baca analisis mendalam, tren Generative AI, Machine Learning, hingga etika teknologi langsung di website dengan pilihan tampilan nyaman dan informasi waktu baca yang lengkap.
+            </p>
+            
+            <!-- Search Bar -->
+            <div class="max-w-xl mx-auto pt-2">
+                <div class="relative flex items-center">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 text-slate-400"></i>
+                    <input type="text" id="searchInput" placeholder="Cari topik AI (misal: LLM, Kesehatan, Robotika)..." 
+                        class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-slate-800 transition text-sm">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content: Filter Kategori & List Berita -->
+    <main id="berita" class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        
+        <!-- Header Bagian Berita & Filter Kategori -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div>
+        <!-- Info Jumlah Artikel & Mode Tampilan Baca di Website -->
+        <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500 border-b border-slate-200 pb-3">
+            <span id="articleCountText">Menampilkan semua artikel</span>
+            <div class="flex items-center gap-2">
+                <span class="font-medium text-slate-600">Bentuk Tampilan:</span>
+                <div class="inline-flex rounded-xl bg-slate-200/70 p-1">
+                    <button id="viewGridBtn" onclick="setLayoutMode('grid')" class="px-3 py-1 rounded-lg bg-white text-slate-900 font-semibold shadow-sm transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-table-cells-large"></i> Kartu
+                    </button>
+                    <button id="viewListBtn" onclick="setLayoutMode('list')" class="px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 font-semibold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-list"></i> Daftar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid / List Daftar Berita -->
+        <div id="newsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Kartu berita dirender via JavaScript -->
+        </div>
+
+        <!-- Empty State jika pencarian tidak ditemukan -->
+        <div id="emptyState" class="hidden text-center py-16 bg-white rounded-3xl border border-slate-200">
+            <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fa-regular fa-folder-open"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800">Artikel Tidak Ditemukan</h3>
+            <p class="text-sm text-slate-500 mt-1 mb-4">Coba gunakan kata kunci lain atau pilih kategori "Semua".</p>
+            <button onclick="resetFilter()" class="px-5 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-xl hover:bg-blue-700 transition">
+                Tampilkan Semua Berita
+            </button>
+        </div>
+
+        <!-- Section Pengiriman Informasi / Kontribusi Berita via WhatsApp & Email -->
+        <section id="kirim-info" class="mt-16 bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-5">
+                <!-- Kolom Kiri: Info Kontak -->
+                <div class="lg:col-span-2 bg-gradient-to-br from-blue-600 to-indigo-800 p-8 text-white flex flex-col justify-between">
+                    <div>
+                        <span class="inline-block px-3 py-1 bg-white/20 rounded-lg text-xs font-semibold mb-4">Redaksi & Komunitas</span>
+                        <h3 class="text-2xl font-bold leading-snug">Punya Informasi atau Berita AI Terbaru?</h3>
+                        <p class="text-blue-100 text-sm mt-3 leading-relaxed">
+                            Kirimkan rilis berita, temuan riset, pertanyaan, atau saran topik kecerdasan buatan langsung ke tim redaksi kami melalui WhatsApp atau Email.
+                        </p>
+                    </div>
+
+                    <div class="space-y-4 mt-8 pt-6 border-t border-white/20 text-sm">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
+                                <i class="fa-brands fa-whatsapp text-xl text-emerald-300"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-blue-200">Pengiriman via WhatsApp</p>
+                                <p class="font-bold tracking-wide">+62 895-1849-3695</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
+                                <i class="fa-regular fa-envelope text-lg text-amber-300"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-blue-200">Pengiriman via Email</p>
+                                <p class="font-bold">redaksi.ainusantara@gmail.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kolom Kanan: Formulir Pengiriman -->
+                <div class="lg:col-span-3 p-6 sm:p-8">
+                    <h4 class="text-lg font-bold text-slate-900 mb-1">Formulir Pengiriman Informasi</h4>
+                    <p class="text-xs text-slate-500 mb-6">Isi detail di bawah ini lalu pilih metode pengiriman (WhatsApp atau Email).</p>
+
+                    <form id="submissionForm" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1.5">Nama Lengkap *</label>
+                                <input type="text" id="senderName" required placeholder="Contoh: Budi Santoso"
+                                    class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1.5">Kategori Topik *</label>
+                                <select id="senderCategory" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                                    <option value="Generative AI">Generative AI</option>
+                                    <option value="Machine Learning">Machine Learning</option>
+                                    <option value="AI & Bisnis">AI & Bisnis</option>
+                                    <option value="Robotika & Otomasi">Robotika & Otomasi</option>
+                                    <option value="Etika & Regulasi AI">Etika & Regulasi AI</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Judul / Subjek Informasi *</label>
+                            <input type="text" id="senderSubject" required placeholder="Contoh: Terobosan Model AI Bahasa Daerah Indonesia"
+                                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">Isi Informasi / Pesan *</label>
+                            <textarea id="senderMessage" rows="3" required placeholder="Tuliskan detail informasi, tautan sumber, atau pesan Anda di sini..."
+                                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+
+                        <!-- Tombol Aksi Kirim -->
+                        <div class="pt-2 flex flex-col sm:flex-row gap-3">
+                            <button type="button" onclick="sendViaWhatsApp()" 
+                                class="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-5 rounded-xl shadow-sm transition text-sm">
+                                <i class="fa-brands fa-whatsapp text-lg"></i>
+                                <span>Kirim via WhatsApp</span>
+                            </button>
+                            <button type="button" onclick="sendViaEmail()" 
+                                class="flex-1 inline-flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-900 text-white font-semibold py-3 px-5 rounded-xl shadow-sm transition text-sm">
+                                <i class="fa-regular fa-envelope text-base"></i>
+                                <span>Kirim via Email</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-brain text-blue-500 text-base"></i>
+                <span class="font-bold text-white text-sm">AI Nusantara</span>
+                <span>&copy; 2026. Hak Cipta Dilindungi.</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span>Portal Informasi & Bacaan Kecerdasan Buatan</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Pembaca Artikel Lengkap (Baca Langsung di Website dengan Pengaturan Bentuk Baca) -->
+    <div id="articleModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-slate-900/75 backdrop-blur-sm p-4 sm:p-6 flex items-center justify-center">
+        <div id="modalContainer" class="bg-white text-slate-800 rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden transition-colors duration-200">
+            
+            <!-- Header Modal -->
+            <div id="modalHeader" class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span id="modalCategory" class="px-3 py-1 rounded-lg bg-blue-100 text-blue-700 text-xs font-bold">Kategori</span>
+                    <span id="modalReadTime" class="text-xs text-slate-500 font-medium"><i class="fa-regular fa-clock mr-1"></i> 4 menit baca</span>
+                </div>
+                <button onclick="closeArticleModal()" class="w-9 h-9 rounded-xl bg-slate-200/80 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Konten Modal (Scrollable) -->
+            <div class="p-6 sm:p-8 overflow-y-auto space-y-5">
+                <img id="modalImage" src="" alt="Ilustrasi Berita AI" class="w-full h-56 sm:h-72 object-cover rounded-2xl bg-slate-200">
+                
+                <!-- Informasi Waktu Rilis & Penulis -->
+                <div class="flex flex-wrap items-center gap-3 text-xs opacity-75">
+                    <span><i class="fa-regular fa-calendar mr-1"></i> <span id="modalDate"></span></span>
+                    <span>•</span>
+                    <span><i class="fa-regular fa-clock mr-1"></i> <span id="modalPublishTime"></span></span>
+                    <span>•</span>
+                    <span><i class="fa-regular fa-user mr-1"></i> <span id="modalAuthor"></span></span>
+                </div>
+
+                <h2 id="modalTitle" class="text-2xl sm:text-3xl font-extrabold leading-tight"></h2>
+                
+                <!-- Isi Artikel Lengkap -->
+                <div id="modalContent" class="text-base leading-relaxed space-y-4">
+                    <!-- Paragraf artikel dimasukkan via JS -->
+                </div>
+            </div>
+
+            <!-- Footer Modal: Kontrol Bentuk & Kenyamanan Membaca Langsung di Website -->
+            <div id="modalFooter" class="px-6 py-3.5 border-t border-slate-200 bg-slate-50 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-semibold opacity-75">Bentuk Baca:</span>
+                    <!-- Pengaturan Ukuran Teks -->
+                    <button onclick="changeFontSize(-1)" title="Perkecil Huruf" class="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-slate-200/60 transition">A-</button>
+                    <button onclick="changeFontSize(1)" title="Perbesar Huruf" class="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-bold hover:bg-slate-200/60 transition">A+</button>
+                    <!-- Pengaturan Tema Kertas Baca -->
+                    <button onclick="setReaderTheme('light')" class="px-2.5 py-1.5 rounded-lg bg-white border border-slate-300 text-slate-800 text-xs font-semibold shadow-xs">Terang</button>
+                    <button onclick="setReaderTheme('sepia')" class="px-2.5 py-1.5 rounded-lg bg-amber-100 border border-amber-300 text-amber-950 text-xs font-semibold">Sepia</button>
+                    <button onclick="setReaderTheme('dark')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-white text-xs font-semibold">Gelap</button>
+                </div>
+                <button onclick="closeArticleModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold transition">
+                    Selesai Membaca
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Toast Notification (Pengganti alert()) -->
+    <div id="toastBox" class="fixed bottom-5 right-5 z-50 hidden transform transition-all duration-300">
+        <div class="bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 text-sm border border-slate-700">
+            <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+            <span id="toastMessage">Pesan berhasil diproses</span>
+        </div>
+        // Database Artikel Berita AI (Lengkap dengan kategori, waktu rilis, durasi baca, dan isi penuh)
+        const articlesData = [
+            {
+                id: 1,
+                title: "Evolusi Model Bahasa Besar (LLM) Multimoda: Memahami Teks, Suara, dan Video Sekaligus",
+                category: "Generative AI",
+                readTime: "4 Menit Baca",
+                date: "18 November 2026",
+                publishTime: "09:30 WIB",
+                author: "Tim Riset AI Nusantara",
+                image: "https://placehold.co/800x450/1e3a8a/ffffff?text=Generative+AI+Multimoda",
+                summary: "Generasi terbaru kecerdasan buatan tidak lagi hanya memproses teks, melainkan mampu bernalar secara real-time melalui input visual dan audio.",
+                content: [
+                    "Perkembangan kecerdasan buatan generatif memasuki babak baru dengan hadirnya arsitektur multimoda asli (native multimodal). Berbeda dengan model terdahulu yang menggabungkan beberapa sistem terpisah, model modern dilatih sejak awal menggunakan kombinasi data teks, gambar, audio, dan video secara bersamaan.",
+                    "Kemampuan ini memungkinkan asisten AI memahami konteks dunia nyata dengan jauh lebih akurat. Misalnya, pengguna dapat mengarahkan kamera ponsel ke rangkaian komponen elektronik yang rusak, dan AI dapat memberikan panduan perbaikan langkah demi langkah secara lisan dalam waktu nyata.",
+                    "Di Indonesia, adopsi teknologi ini mulai merambah sektor pendidikan dan layanan pelanggan, di mana interaksi suara dalam bahasa daerah maupun bahasa Indonesia formal dapat diproses dengan latensi sangat rendah."
+                ]
+            },
+            {
+                id: 2,
+                title: "Penerapan Machine Learning untuk Deteksi Dini Penyakit Tropis di Rumah Sakit Daerah",
+                category: "Machine Learning",
+                readTime: "5 Menit Baca",
+                date: "16 November 2026",
+                publishTime: "14:15 WIB",
+                author: "dr. Hendra Wijaya & Tim Tech",
+                image: "https://placehold.co/800x450/0f766e/ffffff?text=AI+Kesehatan+%26+ML",
+                summary: "Algoritma visi komputer membantu tenaga medis menganalisis sampel laboratorium dan citra medis dengan tingkat akurasi tinggi dan biaya terjangkau.",
+                content: [
+                    "Keterbatasan jumlah dokter spesialis di wilayah kepulauan menjadi tantangan besar bagi layanan kesehatan. Kini, algoritma Machine Learning berbasis Computer Vision hadir sebagai alat bantu diagnostik yang efektif bagi fasilitas kesehatan tingkat pertama.",
+                    "Dengan melatih jaringan saraf tiruan menggunakan puluhan ribu citra mikroskopis dan rontgen, sistem AI mampu menandai indikasi awal penyakit seperti tuberkulosis dan demam berdarah dalam hitungan detik.",
+                    "Penting dicatat bahwa AI berperan sebagai sistem pendukung keputusan klinis (Clinical Decision Support), sehingga keputusan akhir medis tetap berada di tangan dokter yang berwenang."
+                ]
+            },
+            {
+                id: 3,
+                title: "Otomasi Cerdas di UMKM: Meningkatkan Efisiensi Operasional hingga 40% dengan Agen AI",
+                category: "AI & Bisnis",
+                readTime: "3 Menit Baca",
+                date: "14 November 2026",
+                publishTime: "11:00 WIB",
+                author: "Siti Rahmawati",
+                image: "https://placehold.co/800x450/4338ca/ffffff?text=AI+untuk+Bisnis+%26+UMKM",
+                summary: "Pelaku usaha kini memanfaatkan AI Agents untuk mengelola inventaris, membalas pesan pelanggan 24/7, serta memprediksi tren permintaan pasar.",
+                content: [
+                    "Transformasi digital tidak lagi dimonopoli oleh perusahaan raksasa. Berkat hadirnya perangkat lunak berbasis cloud yang terjangkau, pelaku Usaha Mikro, Kecil, dan Menengah (UMKM) kini dapat mengintegrasikan agen AI ke dalam alur kerja harian mereka.",
+                    "Agen AI modern mampu menghubungkan katalog produk dengan layanan pesan instan, menjawab pertanyaan stok barang, membuatkan draf faktur, hingga menganalisis produk mana yang paling laris pada musim tertentu.",
+                    "Menurut survei adopsi digital nasional, bisnis yang mengintegrasikan otomatisasi AI secara bertahap mencatat penghematan waktu administrasi hingga 40 persen."
+                ]
+            },
+            {
+                id: 4,
+                title: "Robotika Otonom di Sektor Pertanian Presisi: Mengoptimalkan Hasil Panen Nusantara",
+                category: "Robotika & Otomasi",
+                readTime: "4 Menit Baca",
+                date: "11 November 2026",
+                publishTime: "08:45 WIB",
+                author: "Rizky Pratama",
+                image: "https://placehold.co/800x450/047857/ffffff?text=Robotika+%26+Pertanian+AI",
+                summary: "Kombinasi drone pemetaan dan robot darat berbasis sensor AI meminimalkan penggunaan pupuk serta mendeteksi hama sebelum menyebar luas.",
+                content: [
+                    "Sektor agrikultur menghadapi tantangan perubahan iklim dan efisiensi lahan. Teknologi pertanian presisi yang ditenagai kecerdasan buatan menawarkan solusi terukur untuk meningkatkan produktivitas pangan.",
+                    "Drone yang dilengkapi kamera multispektral terbang di atas lahan perkebunan untuk memetakan tingkat kelembapan tanah dan kesehatan daun. Data tersebut kemudian diolah oleh AI untuk menentukan titik mana saja yang membutuhkan penyiraman atau pemupukan ekstra.",
+                    "Pendekatan ini tidak hanya menekan biaya operasional petani hingga 25 persen, tetapi juga menjaga kelestarian lingkungan karena penggunaan bahan kimia menjadi jauh lebih terkendali."
+                ]
+            },
+            {
+                id: 5,
+                title: "Kerangka Etika dan Tata Kelola AI: Melindungi Privasi Data dan Hak Cipta Kreator",
+                category: "Etika & Regulasi AI",
+                readTime: "6 Menit Baca",
+                date: "08 November 2026",
+                publishTime: "16:20 WIB",
+                author: "Dr. Ayu Lestari, S.H., M.Tech",
+                image: "https://placehold.co/800x450/334155/ffffff?text=Etika+%26+Regulasi+AI",
+                summary: "Seiring pesatnya perkembangan teknologi generatif, transparansi algoritma dan perlindungan hak kekayaan intelektual menjadi prioritas utama regulator.",
+                content: [
+                    "Kemampuan AI dalam menghasilkan gambar, musik, dan tulisan yang menyerupai karya manusia memunculkan diskusi mendalam mengenai hak cipta, keaslian informasi, serta perlindungan data pribadi.",
+                    "Berbagai negara mulai menerapkan standar pelabelan konten (watermarking) digital agar masyarakat dapat membedakan mana konten yang dibuat oleh manusia dan mana yang dihasilkan oleh mesin kecerdasan buatan.",
+                    "Tata kelola AI yang bertanggung jawab (Responsible AI) menuntut pengembang teknologi untuk memastikan sistem mereka bebas dari bias diskriminatif, aman dari penyalahgunaan deepfake, serta transparan dalam penggunaan data latih."
+                ]
+            },
+            {
+                id: 6,
+                title: "Edge AI: Menjalankan Kecerdasan Buatan Langsung di Perangkat Tanpa Koneksi Internet",
+                category: "Machine Learning",
+                readTime: "4 Menit Baca",
+                date: "05 November 2026",
+                publishTime: "10:10 WIB",
+                author: "Dimas Nugroho",
+                image: "https://placehold.co/800x450/0369a1/ffffff?text=Edge+AI+Technology",
+                summary: "Kompresi model AI memungkinkan chip hemat daya memproses data secara lokal, meningkatkan privasi pengguna dan kecepatan respons.",
+                content: [
+                    "Selama ini, sebagian besar pemrosesan AI berat bergantung pada server cloud raksasa. Namun, tren Edge AI memindahkan kemampuan komputasi cerdas langsung ke dalam perangkat pengguna seperti ponsel pintar, kamera keamanan, dan perangkat IoT.",
+                    "Melalui teknik kuantisasi dan pemangkasan model (model pruning), ukuran model AI dapat diperkecil secara signifikan tanpa mengorbankan akurasinya secara drastis.",
+                    "Keunggulan utama Edge AI adalah privasi yang lebih terjaga karena data sensitif tidak perlu dikirim ke server luar, serta tetap berfungsi optimal di daerah yang memiliki keterbatasan sinyal internet."
+                ]
+            }
+        ];
+
+        // State Aplikasi
+        let selectedCategory = "Semua";
+        let searchQuery = "";
+        let layoutMode = "grid"; // 'grid' atau 'list'
+        let readerFontSize = 16; // dalam px
+        let currentOpenedArticle = null;
+        // Ubah Bentuk Tampilan Daftar Berita di Website (Kartu / Daftar)
+        function setLayoutMode(mode) {
+            layoutMode = mode;
+            const gridBtn = document.getElementById("viewGridBtn");
+            const listBtn = document.getElementById("viewListBtn");
+            const newsGrid = document.getElementById("newsGrid");
+
+            if (mode === "grid") {
+                gridBtn.className = "px-3 py-1 rounded-lg bg-white text-slate-900 font-semibold shadow-sm transition flex items-center gap-1.5";
+                listBtn.className = "px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 font-semibold transition flex items-center gap-1.5";
+                newsGrid.className = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6";
+            } else {
+                listBtn.className = "px-3 py-1 rounded-lg bg-white text-slate-900 font-semibold shadow-sm transition flex items-center gap-1.5";
+                gridBtn.className = "px-3 py-1 rounded-lg text-slate-600 hover:text-slate-900 font-semibold transition flex items-center gap-1.5";
+                newsGrid.className = "flex flex-col gap-4";
+            }
+            renderArticles();
+        }
+
+        // Render Kartu/Daftar Berita Berdasarkan Kategori & Pencarian
+        function renderArticles() {
+            const grid = document.getElementById("newsGrid");
+            const emptyState = document.getElementById("emptyState");
+            const countText = document.getElementById("articleCountText");
+
+            const filtered = articlesData.filter(article => {
+                const matchCategory = selectedCategory === "Semua" || article.category === selectedCategory;
+                const matchSearch = article.title.toLowerCase().includes(searchQuery) ||
+                                    article.summary.toLowerCase().includes(searchQuery) ||
+                                    article.category.toLowerCase().includes(searchQuery);
+                return matchCategory && matchSearch;
+            });
+
+            grid.innerHTML = "";
+
+            if (filtered.length === 0) {
+                grid.classList.add("hidden");
+                emptyState.classList.remove("hidden");
+                countText.textContent = "0 artikel ditemukan";
+                return;
+            }
+
+            grid.classList.remove("hidden");
+            emptyState.classList.add("hidden");
+            countText.textContent = `Menampilkan ${filtered.length} artikel${selectedCategory !== "Semua" ? ` dalam kategori "${selectedCategory}"` : ""}`;
+
+            filtered.forEach(article => {
+                const card = document.createElement("article");
+
+                if (layoutMode === "grid") {
+                    card.className = "bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between group";
+                    card.innerHTML = `
+                        <div>
+                            <!-- Thumbnail Gambar -->
+                            <div class="relative overflow-hidden h-48 bg-slate-200 cursor-pointer" onclick="openArticleModal(${article.id})">
+                                <img src="${article.image}" alt="${article.title}" 
+                                    onerror="this.src='https://placehold.co/800x450/1e293b/ffffff?text=Berita+AI'"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                <span class="absolute top-3 left-3 px-3 py-1 rounded-xl bg-slate-900/80 backdrop-blur-sm text-white text-[11px] font-semibold">
+                                    ${article.category}
+                                </span>
+                            </div>
+
+                            <!-- Konten Kartu -->
+                            <div class="p-5">
+                                <!-- Info Waktu Baca & Waktu Rilis -->
+                                <div class="flex items-center justify-between text-xs text-slate-500 mb-2.5">
+                                    <span class="inline-flex items-center gap-1 font-medium text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">
+                                        <i class="fa-regular fa-clock"></i> ${article.readTime}
+                                    </span>
+                                    <span>${article.date} • ${article.publishTime}</span>
+                                </div>
+
+                                <h3 onclick="openArticleModal(${article.id})" class="text-lg font-bold text-slate-900 leading-snug mb-2 cursor-pointer group-hover:text-blue-600 transition line-clamp-2">
+                                    ${article.title}
+                                </h3>
+
+                                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed line-clamp-3">
+                                    ${article.summary}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Tombol Baca Langsung di Website -->
+                        <div class="px-5 pb-5 pt-2">
+                            <button onclick="openArticleModal(${article.id})" 
+                                class="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-2.5 px-4 rounded-xl transition shadow-sm">
+                                <i class="fa-solid fa-book-open"></i>
+                                <span>Baca Artikel Lengkap</span>
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    // Bentuk Tampilan Daftar (List View)
+                    card.className = "bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col sm:flex-row group";
+                    card.innerHTML = `
+                        <div class="relative overflow-hidden sm:w-64 h-48 sm:h-auto shrink-0 bg-slate-200 cursor-pointer" onclick="openArticleModal(${article.id})">
+                            <img src="${article.image}" alt="${article.title}" 
+                                onerror="this.src='https://placehold.co/800x450/1e293b/ffffff?text=Berita+AI'"
+                                class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                            <span class="absolute top-3 left-3 px-3 py-1 rounded-xl bg-slate-900/80 backdrop-blur-sm text-white text-[11px] font-semibold">
+                                ${article.category}
+                            </span>
+                        </div>
+                        <div class="p-5 sm:p-6 flex flex-col justify-between flex-grow">
+                            <div>
+                                <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mb-2">
+                                    <span class="inline-flex items-center gap-1 font-medium text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">
+                                        <i class="fa-regular fa-clock"></i> ${article.readTime}
+                                    </span>
+                                    <span><i class="fa-regular fa-calendar mr-1"></i>${article.date} (${article.publishTime})</span>
+                                </div>
+                                <h3 onclick="openArticleModal(${article.id})" class="text-lg sm:text-xl font-bold text-slate-900 leading-snug mb-2 cursor-pointer group-hover:text-blue-600 transition">
+                                    ${article.title}
+                                </h3>
+                                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed mb-4">
+                                    ${article.summary}
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                                <span class="text-xs text-slate-500">Oleh: ${article.author}</span>
+                                <button onclick="openArticleModal(${article.id})" 
+                                    class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-2 px-4 rounded-xl transition shadow-sm">
+                                    <i class="fa-solid fa-book-open"></i>
+                                    <span>Baca Sekarang</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+                grid.appendChild(card);
+            });
+        }
+
+        // Reset Filter & Pencarian
+        function resetFilter() {
+            selectedCategory = "Semua";
+            searchQuery = "";
+            document.getElementById("searchInput").value = "";
+            renderCategories();
+            renderArticles();
+        }
+
+        // Buka Modal Baca Langsung di Website
+        function openArticleModal(articleId) {
+            const article = articlesData.find(a => a.id === articleId);
+            if (!article) return;
+
+            currentOpenedArticle = article;
+
+            document.getElementById("modalCategory").textContent = article.category;
+            document.getElementById("modalReadTime").innerHTML = `<i class="fa-regular fa-clock mr-1"></i> ${article.readTime}`;
+            document.getElementById("modalImage").src = article.image;
+            document.getElementById("modalDate").textContent = article.date;
+            document.getElementById("modalPublishTime").textContent = article.publishTime;
+            document.getElementById("modalAuthor").textContent = article.author;
+            document.getElementById("modalTitle").textContent = article.title;
+
+            const contentContainer = document.getElementById("modalContent");
+            contentContainer.style.fontSize = `${readerFontSize}px`;
+            contentContainer.innerHTML = article.content.map(p => `<p>${p}</p>`).join("");
+
+            document.getElementById("articleModal").classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+        }
+
+        // Ubah Ukuran Huruf Saat Membaca di Website
+        function changeFontSize(delta) {
+            readerFontSize = Math.min(22, Math.max(13, readerFontSize + delta));
+            document.getElementById("modalContent").style.fontSize = `${readerFontSize}px`;
+        }
+
+        // Ubah Tema Warna Kertas Baca di Website (Terang / Sepia / Gelap)
+        function setReaderTheme(theme) {
+            const container = document.getElementById("modalContainer");
+            const header = document.getElementById("modalHeader");
+            const footer = document.getElementById("modalFooter");
+
+            container.classList.remove("bg-white", "text-slate-800", "bg-amber-50", "text-amber-950", "bg-slate-900", "text-slate-100");
+            header.classList.remove("bg-slate-50", "border-slate-200", "bg-amber-100/70", "border-amber-200", "bg-slate-800", "border-slate-700");
+            footer.classList.remove("bg-slate-50", "border-slate-200", "bg-amber-100/70", "border-amber-200", "bg-slate-800", "border-slate-700");
+
+            if (theme === "sepia") {
+                container.classList.add("bg-amber-50", "text-amber-950");
+                header.classList.add("bg-amber-100/70", "border-amber-200");
+                footer.classList.add("bg-amber-100/70", "border-amber-200");
+            } else if (theme === "dark") {
+                container.classList.add("bg-slate-900", "text-slate-100");
+                header.classList.add("bg-slate-800", "border-slate-700");
+                footer.classList.add("bg-slate-800", "border-slate-700");
+            } else {
+                container.classList.add("bg-white", "text-slate-800");
+                header.classList.add("bg-slate-50", "border-slate-200");
+                footer.classList.add("bg-slate-50", "border-slate-200");
+            }
+        }
+
+        // Tutup Modal
+        function closeArticleModal() {
+            document.getElementById("articleModal").classList.add("hidden");
+            document.body.style.overflow = "auto";
+        }
+
+        // Tutup modal jika klik area backdrop di luar kotak
+        document.getElementById("articleModal").addEventListener("click", (e) => {
+            if (e.target.id === "articleModal") {
+                closeArticleModal();
+            }
+        });
+
+        // Validasi Form Pengiriman Informasi
+        function getFormValues() {
+            const name = document.getElementById("senderName").value.trim();
+            const category = document.getElementById("senderCategory").value;
+            const subject = document.getElementById("senderSubject").value.trim();
+            const message = document.getElementById("senderMessage").value.trim();
+
+            if (!name || !subject || !message) {
+                showToast("Harap lengkapi Nama, Judul, dan Isi Informasi terlebih dahulu.", true);
+                return null;
+            }
+            return { name, category, subject, message };
+        }
+
+        // Kirim Informasi dari Pengunjung via WhatsApp
+        function sendViaWhatsApp() {
+            const data = getFormValues();
+            if (!data) return;
+
+            const waMessage = `Halo Redaksi AI Nusantara,\n\n` +
+                              `*KIRIMAN INFORMASI / BERITA AI*\n` +
+                              `• *Nama:* ${data.name}\n` +
+                              `• *Kategori:* ${data.category}\n` +
+                              `• *Judul:* ${data.subject}\n\n` +
+                              `*Isi Informasi:*\n${data.message}`;
+
+            const waUrl = `https://wa.me/${TARGET_WA_NUMBER}?text=${encodeURIComponent(waMessage)}`;
+            window.open(waUrl, "_blank", "noopener,noreferrer");
+            showToast("Mengarahkan ke WhatsApp untuk mengirim informasi...");
+        }
+
+        // Tutup Modal
+        function closeArticleModal() {
+            document.getElementById("articleModal").classList.add("hidden");
+            document.body.style.overflow = "auto";
+        }
+
+        // Tutup modal jika klik area backdrop di luar kotak
+        document.getElementById("articleModal").addEventListener("click", (e) => {
+            if (e.target.id === "articleModal") {
+                closeArticleModal();
+            }
+        });
+
+        // Bagikan / Baca Artikel Lewat WhatsApp
+        function shareArticleToWhatsApp(articleId) {
+            const article = articlesData.find(a => a.id === articleId);
+            if (!article) return;
+
+            const fullText = `*${article.title}*\n` +
+                             `Kategori: ${article.category} | Estimasi: ${article.readTime}\n` +
+                             `Tanggal: ${article.date}\n\n` +
+                             `${article.content.join("\n\n")}\n\n` +
+                             `_Dibagikan dari Portal AI Nusantara (+${TARGET_WA_NUMBER})_`;
+
+            const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(fullText)}`;
+            window.open(waUrl, "_blank", "noopener,noreferrer");
+            showToast("Membuka WhatsApp untuk membaca/membagikan artikel...");
+        }
+
+        // Salin Teks Artikel ke Clipboard
+        function copyArticleText(article) {
+            const textToCopy = `${article.title}\n(${article.category} - ${article.readTime})\n\n${article.content.join("\n\n")}`;
+            const tempTextarea = document.createElement("textarea");
+            tempTextarea.value = textToCopy;
+            document.body.appendChild(tempTextarea);
+            tempTextarea.select();
+            try {
+                document.execCommand("copy");
+                showToast("Teks artikel berhasil disalin ke papan klip!");
+            } catch (err) {
+                showToast("Gagal menyalin teks.", true);
+            }
+            document.body.removeChild(tempTextarea);
+        }
+
+        // Validasi Form Pengiriman Informasi
+        function getFormValues() {
+            const name = document.getElementById("senderName").value.trim();
+            const category = document.getElementById("senderCategory").value;
+            const subject = document.getElementById("senderSubject").value.trim();
+            const message = document.getElementById("senderMessage").value.trim();
+
+            if (!name || !subject || !message) {
+                showToast("Harap lengkapi Nama, Judul, dan Isi Informasi terlebih dahulu.", true);
+                return null;
+            }
+            return { name, category, subject, message };
+        }
+
+        // Kirim Informasi dari Pengunjung langsung ke WhatsApp +6289518493695
+        function sendViaWhatsApp() {
+            const data = getFormValues();
+            if (!data) return;
+
+            const waMessage = `Halo Redaksi AI Nusantara,\n\n` +
+                              `*KIRIMAN INFORMASI / BERITA AI*\n` +
+                              `• *Nama:* ${data.name}\n` +
+                              `• *Kategori:* ${data.category}\n` +
+                              `• *Judul:* ${data.subject}\n\n` +
+                              `*Isi Informasi:*\n${data.message}`;
+
+            const waUrl = `https://wa.me/${TARGET_WA_NUMBER}?text=${encodeURIComponent(waMessage)}`;
+            window.open(waUrl, "_blank", "noopener,noreferrer");
+            showToast("Mengarahkan ke WhatsApp +62 895-1849-3695...");
+        }
+
+        // Kirim Informasi via Email
+        function sendViaEmail() {
+            const data = getFormValues();
+            if (!data) return;
+
+            const emailSubject = `[AI Nusantara - ${data.category}] ${data.subject}`;
+            const emailBody = `Halo Redaksi AI Nusantara,\n\n` +
+                              `Berikut adalah informasi/berita AI yang ingin saya kirimkan:\n\n` +
+                              `Nama Pengirim: ${data.name}\n` +
+                              `Kategori Topik: ${data.category}\n` +
+                              `Judul Informasi: ${data.subject}\n\n` +
+                              `Detail Informasi:\n${data.message}\n\n` +
+                              `Kontak WhatsApp Redaksi: +${TARGET_WA_NUMBER}`;
+
+            const mailtoUrl = `mailto:${TARGET_EMAIL}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+            window.location.href = mailtoUrl;
+            showToast("Membuka aplikasi Email Anda...");
+        }
+
+        // Notifikasi Toast
+        let toastTimeout;
+        function showToast(msg, isError = false) {
+            const toastBox = document.getElementById("toastBox");
+            const toastMsg = document.getElementById("toastMessage");
+            const toastIcon = document.getElementById("toastIcon");
+
+            toastMsg.textContent = msg;
+            toastIcon.className = isError 
+                ? "fa-solid fa-circle-exclamation text-amber-400 text-lg" 
+                : "fa-solid fa-circle-check text-emerald-400 text-lg";
+
+            toastBox.classList.remove("hidden");
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toastBox.classList.add("hidden");
+            }, 3500);
+        }
+    </script>
+</body>
+                  </html>
